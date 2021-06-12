@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require("cors");
 
 const admin = require('firebase-admin');
 const serviceAccount = require("./itqan-task-firebase-adminsdk-l3sz7-ca3934bbfb.json");
@@ -10,6 +11,7 @@ const db = admin.firestore();
 const app = express()
 const port = process.env.PORT || 4000
 
+app.use(cors());
 app.use(express.json())
 
 app.post('/subscriptions/new', addSubscription);
@@ -17,6 +19,7 @@ app.get('/subscriptions', getSubscription);
 app.get('/subscriptions/:email', filterSubscriptions);
 
 function addSubscription(req, res, next) {
+    console.log(req.body)
     const { email, channel } = req.body;
     if (!email || !channel || email === "" || channel === "") {
         res.status(200).send({
@@ -40,7 +43,8 @@ function addSubscription(req, res, next) {
             .then((docRef) => {
                 console.log("Document written with ID: ", docRef.id);
                 res.status(200).send({
-                    subscriptions: {
+                    mwsaage: "added",
+                    subscription: {
                         email, channel
                     }
                 });
